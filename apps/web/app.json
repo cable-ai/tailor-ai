@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Tailor AI",
+    "slug": "tailor-ai",
+    "version": "0.1.0",
+    "scheme": "tailor-ai",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.cableai.tailorai"
+    },
+    "android": {
+      "package": "com.cableai.tailorai",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "display": "standalone",
+      "bundler": "metro",
+      "barStyle": "light-content",
+      "dir": "ltr"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to upload clothing items for AI analysis.",
+          "cameraPermission": "The app accesses your camera to take photos of clothing items."
+        }
+      ]
+    ]
+  }
+}

@@ -51,7 +51,7 @@ git clone https://github.com/cable-ai/tailor-ai.git
 cd tailor-ai
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Set up environment variables
 cp .env.example .env.local

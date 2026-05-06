@@ -1,0 +1,39 @@
+{
+  "name": "tailor-ai-web",
+  "version": "0.1.0",
+  "description": "Tailor AI - Web app",
+  "private": true,
+  "main": "index.tsx",
+  "scripts": {
+    "start": "expo start --web",
+    "dev": "expo start --web",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "test": "jest"
+  },
+  "dependencies": {
+    "expo": "^50.0.0",
+    "expo-image-picker": "^14.7.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "0.73.6",
+    "react-native-web": "^0.19.0"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^10.0.0",
+    "@babel/core": "^7.23.0",
+    "@types/jest": "^29.5.0",
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.73.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "eslint-plugin-react": "^7.33.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.2.0"
+  }
+}

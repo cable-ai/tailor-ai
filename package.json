@@ -1,0 +1,30 @@
+{
+  "name": "tailor-ai",
+  "version": "0.1.0",
+  "description": "AI-powered clothing resale listing tool",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w apps/web\" \"npm run dev -w apps/api\"",
+    "dev:web": "npm run dev -w apps/web",
+    "dev:api": "npm run dev -w apps/api",
+    "build": "npm run build -w apps/web && npm run build -w apps/api",
+    "build:web": "npm run build -w apps/web",
+    "build:api": "npm run build -w apps/api",
+    "test": "npm run test -w apps/web && npm run test -w apps/api",
+    "test:web": "npm run test -w apps/web",
+    "test:api": "npm run test -w apps/api",
+    "lint": "npm run lint -w apps/web && npm run lint -w apps/api",
+    "format": "npm run format -w apps/web && npm run format -w apps/api"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~3.1.3",
+    "@expo/webpack-config": "~19.0.1"
+  }
+}
