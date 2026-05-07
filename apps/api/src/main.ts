@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
+import { analyzeClothingPhotos } from './services/ai.js';
 
 dotenv.config({ path: '../../.env.local' });
 
@@ -17,7 +18,6 @@ fastify.get('/health', async (request, reply) => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
 
-// AI route placeholder
 fastify.post<{ Body: { photos: string[] } }>('/api/analyze', async (request, reply) => {
   try {
     const { photos } = request.body;
@@ -25,15 +25,16 @@ fastify.post<{ Body: { photos: string[] } }>('/api/analyze', async (request, rep
     if (!photos || photos.length === 0) {
       return reply.status(400).send({ error: 'No photos provided' });
     }
+    if (photos.length > 6) {
+      return reply.status(400).send({ error: 'Maximum 6 photos allowed' });
+    }
 
-    // TODO: Implement Claude Vision analysis
-    return {
-      message: 'AI analysis coming soon',
-      photosReceived: photos.length,
-    };
+    const result = await analyzeClothingPhotos(photos);
+    return result;
   } catch (error) {
-    console.error('Error in /analyze:', error);
-    return reply.status(500).send({ error: 'Internal server error' });
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    console.error('Error in /api/analyze:', message);
+    return reply.status(500).send({ error: message });
   }
 });
 
