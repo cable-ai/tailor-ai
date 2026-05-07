@@ -72,7 +72,27 @@ function parsePhoto(photo: string): ImageSource {
   throw new Error('Photos must be base64 data URIs or HTTPS URLs');
 }
 
+// TODO: Remove mock mode once a real ANTHROPIC_API_KEY is available for end-to-end testing.
+const MOCK_RESULT: ClothingAnalysisResult = {
+  itemType: 'denim jacket',
+  brand: "Levi's",
+  size: 'M',
+  color: ['blue'],
+  pattern: 'solid',
+  material: '100% cotton denim',
+  condition: 'Excellent used condition with minimal wear',
+  conditionGrade: 'EUC',
+  conditionNotes: '',
+  style: 'casual',
+  gender: 'unisex',
+  keywords: ['denim jacket', 'Levis', 'blue jacket', 'casual', 'cotton', 'vintage'],
+};
+
 export async function analyzeClothingPhotos(photos: string[]): Promise<ClothingAnalysisResult> {
+  if (process.env.MOCK_AI === 'true') {
+    return MOCK_RESULT;
+  }
+
   const imageBlocks = photos.map((photo): Anthropic.ImageBlockParam => ({
     type: 'image',
     source: parsePhoto(photo) as Anthropic.ImageBlockParam['source'],
