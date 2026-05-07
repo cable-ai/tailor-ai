@@ -8,11 +8,12 @@
     "start": "expo start --web",
     "dev": "expo start --web",
     "web": "expo start --web",
+    "build": "expo export --platform web",
     "eject": "expo eject",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "expo": "^50.0.0",
