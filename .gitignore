@@ -49,3 +49,6 @@ Thumbs.db
 # Logs
 logs/
 *.log
+
+# Local notes
+scratch.md
