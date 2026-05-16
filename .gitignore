@@ -23,6 +23,7 @@ dist/
 build/
 .next/
 out/
+tsconfig.tsbuildinfo
 
 # Expo
 .expo/
