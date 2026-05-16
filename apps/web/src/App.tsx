@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import { PhotoUploadScreen } from './screens/PhotoUploadScreen';
 import { ReviewScreen } from './screens/ReviewScreen';
+import { PublishScreen } from './screens/PublishScreen';
 import { ClothingAnalysisResult } from './types';
 
 type Screen = 'upload' | 'review' | 'publish';
@@ -40,11 +41,15 @@ export default function App() {
         />
       )}
 
-      {currentScreen === 'publish' && (
-        <View style={styles.placeholder}>
-          <Text style={styles.placeholderTitle}>eBay Publishing</Text>
-          <Text style={styles.placeholderText}>Coming soon — eBay OAuth integration pending.</Text>
-        </View>
+      {currentScreen === 'publish' && analysisResult && (
+        <PublishScreen
+          result={analysisResult}
+          onBack={() => setCurrentScreen('review')}
+          onStartOver={() => {
+            setAnalysisResult(null);
+            setCurrentScreen('upload');
+          }}
+        />
       )}
 
       <View style={styles.footer}>
@@ -75,23 +80,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
-  },
-  placeholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 32,
-  },
-  placeholderTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 8,
-  },
-  placeholderText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
   },
   footer: {
     paddingVertical: 12,
