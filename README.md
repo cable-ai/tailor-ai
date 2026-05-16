@@ -18,15 +18,15 @@ Clothing resellers spend hours manually creating listings across multiple market
 
 **Phase 1 (MVP):** eBay listing via Expo web browser
 
-- [ ] Project scaffolding (Expo + Fastify monorepo)
-- [ ] eBay OAuth integration
-- [ ] Photo upload interface (6 clothing photos)
-- [ ] Clothing AI pipeline (Claude vision → structured JSON)
-- [ ] eBay taxonomy mapping
+- [x] Project scaffolding (Expo + Fastify monorepo)
+- [x] eBay OAuth integration
+- [x] Photo upload interface (6 clothing photos)
+- [x] Clothing AI pipeline (Claude vision → structured JSON)
+- [x] Draft review & editing
+- [x] Publish to eBay (sandbox)
+- [ ] eBay taxonomy mapping (hardcoded by gender today)
 - [ ] Pricing suggestions
 - [ ] Measurements prompt
-- [ ] Draft review & editing
-- [ ] Publish to eBay
 - [ ] Listing history
 
 **Roadmap:**
@@ -68,22 +68,17 @@ tailor-ai/
 ├── apps/
 │   ├── web/                 # Expo web (React Native + TypeScript)
 │   │   ├── src/
-│   │   │   ├── screens/     # Upload, Review, Publish screens
+│   │   │   ├── screens/     # PhotoUploadScreen, ReviewScreen, PublishScreen
 │   │   │   ├── components/  # Reusable UI components
 │   │   │   └── App.tsx
 │   │   └── app.json         # Expo config
 │   │
 │   └── api/                 # Fastify backend
 │       ├── src/
-│       │   ├── routes/
-│       │   │   ├── auth.ts       # eBay OAuth
-│       │   │   ├── listings.ts   # Listing CRUD
-│       │   │   └── ai.ts         # Claude AI pipeline
 │       │   ├── services/
-│       │   │   ├── ebay.ts       # eBay API client
-│       │   │   ├── ai.ts         # Claude vision + text
-│       │   │   └── pricing.ts    # Pricing intelligence
-│       │   └── main.ts           # Fastify server
+│       │   │   ├── ebay.ts       # eBay OAuth + Inventory API
+│       │   │   └── ai.ts         # Claude vision pipeline
+│       │   └── main.ts           # Fastify server + all routes
 │       └── package.json
 │
 ├── docs/
@@ -106,27 +101,27 @@ Create `.env.local` in the project root:
 
 ```env
 # eBay (Sandbox)
-EBAY_SANDBOX_CLIENT_ID=your_sandbox_client_id
-EBAY_SANDBOX_CLIENT_SECRET=your_sandbox_client_secret
-EBAY_SANDBOX_REDIRECT_URI=http://localhost:3000/auth/ebay/callback
+EBAY_SANDBOX_CLIENT_ID=your_app_id
+EBAY_SANDBOX_CLIENT_SECRET=your_cert_id
+EBAY_SANDBOX_REDIRECT_URI=YourName-AppName-SBX-xxxxxxxx   # RuName from eBay developer portal
+
+# eBay account deletion notifications (compliance requirement)
+EBAY_VERIFICATION_TOKEN=your_random_verification_token
+EBAY_NOTIFICATION_ENDPOINT_URL=https://yourdomain.com/api/marketplace/account-deletion
 
 # eBay (Production)
 EBAY_PROD_CLIENT_ID=your_prod_client_id
-EBAY_PROD_CLIENT_SECRET=your_prod_client_secret
+EBAY_PROD_CLIENT_SECRET=your_prod_cert_id
 EBAY_PROD_REDIRECT_URI=https://yourdomain.com/auth/ebay/callback
 
 # Claude API
 ANTHROPIC_API_KEY=your_api_key
 
-# Database (PostgreSQL via Supabase)
-DATABASE_URL=postgresql://user:password@host/dbname
-
-# Redis (via Upstash)
-REDIS_URL=redis://:password@host:port
-
-# App Environment
+# App
 NODE_ENV=development
-API_URL=http://localhost:4000
+API_PORT=4000
+EXPO_PUBLIC_API_URL=http://localhost:4000
+CORS_ORIGIN=http://localhost:8081
 ```
 
 ## Tech Stack
