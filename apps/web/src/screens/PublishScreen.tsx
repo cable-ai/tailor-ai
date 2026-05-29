@@ -27,7 +27,6 @@ export const PublishScreen: React.FC<PublishScreenProps> = ({ result, onBack, on
   const [isPolling, setIsPolling] = useState(false);
   const [publishStatus, setPublishStatus] = useState<PublishStatus>('idle');
   const [listingUrl, setListingUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     checkEbayStatus();
@@ -63,13 +62,9 @@ export const PublishScreen: React.FC<PublishScreenProps> = ({ result, onBack, on
 
   const handlePublish = async () => {
     const parsedPrice = parseFloat(price);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      setError('Please enter a valid price greater than $0.');
-      return;
-    }
+    if (isNaN(parsedPrice) || parsedPrice <= 0) return;
 
     setPublishStatus('publishing');
-    setError(null);
 
     try {
       const res = await fetch(`${API_URL}/api/publish`, {
@@ -80,17 +75,34 @@ export const PublishScreen: React.FC<PublishScreenProps> = ({ result, onBack, on
 
       const data = (await res.json()) as { listingUrl?: string; error?: string };
 
-      if (!res.ok) {
-        throw new Error(data.error ?? 'Publishing failed');
-      }
+      if (!res.ok) throw new Error(data.error ?? 'Publishing failed');
 
       setListingUrl(data.listingUrl ?? null);
       setPublishStatus('success');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } catch {
       setPublishStatus('error');
     }
   };
+
+  if (publishStatus === 'error') {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorIcon}>!</Text>
+        <Text style={styles.errorTitle}>Something went wrong</Text>
+        <Text style={styles.errorDescription}>
+          We couldn't publish your listing. Please try again.
+        </Text>
+        <Button
+          title="Try Again"
+          onPress={() => setPublishStatus('idle')}
+          color="#007AFF"
+        />
+        <View style={styles.startOverButton}>
+          <Button title="Start Over" onPress={onStartOver} color="#666" />
+        </View>
+      </View>
+    );
+  }
 
   if (publishStatus === 'success' && listingUrl) {
     return (
@@ -134,10 +146,7 @@ export const PublishScreen: React.FC<PublishScreenProps> = ({ result, onBack, on
             <TextInput
               style={styles.priceInput}
               value={price}
-              onChangeText={(v) => {
-                setPrice(v);
-                setError(null);
-              }}
+              onChangeText={(v) => setPrice(v)}
               keyboardType="decimal-pad"
               placeholder="0.00"
               placeholderTextColor="#999"
@@ -163,12 +172,6 @@ export const PublishScreen: React.FC<PublishScreenProps> = ({ result, onBack, on
         ) : (
           <View style={styles.connectedBadge}>
             <Text style={styles.connectedText}>eBay connected</Text>
-          </View>
-        )}
-
-        {error && (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
@@ -310,15 +313,29 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2e7d32',
   },
-  errorBox: {
-    backgroundColor: '#ffebee',
-    borderRadius: 4,
-    padding: 12,
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 32,
+  },
+  errorIcon: {
+    fontSize: 64,
+    color: '#c62828',
     marginBottom: 16,
   },
-  errorText: {
-    fontSize: 14,
-    color: '#c62828',
+  errorTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 8,
+  },
+  errorDescription: {
+    fontSize: 15,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 22,
   },
   actions: {
     flexDirection: 'row',
