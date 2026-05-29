@@ -25,7 +25,19 @@ export interface PublishListingParams {
 // In-memory token storage — replace with DB for multi-user persistence
 let storedToken: EbayOAuthToken | null = null;
 
+const MOCK_TOKEN: EbayOAuthToken = {
+  accessToken: 'mock-access-token',
+  refreshToken: 'mock-refresh-token',
+  expiresIn: 86400,
+  expiresAt: new Date(Date.now() + 86400 * 1000),
+};
+
+export function isMockMode(): boolean {
+  return process.env.MOCK_EBAY === 'true';
+}
+
 export function getStoredToken(): EbayOAuthToken | null {
+  if (isMockMode()) return MOCK_TOKEN;
   if (!storedToken) return null;
   if (new Date() >= storedToken.expiresAt) return null;
   return storedToken;
@@ -221,6 +233,13 @@ export async function publishListing(
   accessToken: string,
   { result, price }: PublishListingParams,
 ): Promise<string> {
+  if (isMockMode()) {
+    await new Promise((r) => setTimeout(r, 1500)); // simulate network delay
+    const mockId = Date.now();
+    console.log(`[mock] Would publish: ${result.brand} ${result.itemType} at $${price}`);
+    return `https://www.sandbox.ebay.com/itm/${mockId}`;
+  }
+
   await ensureMerchantLocation(accessToken);
 
   const sku = `tailor-${Date.now()}`;
@@ -235,6 +254,7 @@ export async function publishListing(
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
         'Content-Language': 'en-US',
+        'Accept-Language': 'en-US',
       },
       body: JSON.stringify({
         availability: { shipToLocationAvailability: { quantity: 1 } },
@@ -291,6 +311,7 @@ export async function publishListing(
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
       'Content-Language': 'en-US',
+      'Accept-Language': 'en-US',
     },
     body: JSON.stringify(offerBody),
   });
@@ -310,6 +331,7 @@ export async function publishListing(
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
+        'Accept-Language': 'en-US',
       },
     },
   );

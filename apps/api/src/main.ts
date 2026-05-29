@@ -7,6 +7,7 @@ import {
   exchangeCodeForToken,
   getEbayAuthUrl,
   getStoredToken,
+  isMockMode,
   publishListing,
 } from './services/ebay.js';
 
@@ -14,6 +15,7 @@ dotenv.config({ path: '../../.env.local' });
 
 console.log('[startup] CORS_ORIGIN env:', process.env.CORS_ORIGIN ?? '(not set — using reflect-origin)');
 console.log('[startup] EBAY_SANDBOX_CLIENT_ID:', process.env.EBAY_SANDBOX_CLIENT_ID ?? '(not set)');
+console.log('[startup] MOCK_EBAY:', process.env.MOCK_EBAY === 'true' ? 'enabled' : 'disabled');
 
 const fastify = Fastify({ logger: true });
 
@@ -49,6 +51,15 @@ fastify.post<{ Body: { photos: string[] } }>('/api/analyze', async (request, rep
 
 // eBay OAuth — redirect to eBay authorization page
 fastify.get('/api/auth/ebay', async (_request, reply) => {
+  if (isMockMode()) {
+    return reply.type('text/html').send(
+      `<!DOCTYPE html><html><head><title>eBay Connected (Mock)</title></head><body>
+      <h2>eBay connected! (mock mode)</h2>
+      <p>You can close this window and return to Tailor AI.</p>
+      <script>window.close();</script>
+      </body></html>`,
+    );
+  }
   try {
     const authUrl = getEbayAuthUrl();
     return reply.redirect(authUrl);
